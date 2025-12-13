@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Comment
 from .models import Ticket
+from .permissions import TicketPermission, CommentPermission
 from .serializers import CommentCreateSerializer
 from .serializers import CommentSerializer
 from .serializers import TicketCreateSerializer
@@ -23,7 +24,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     - Agents: see all tickets
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [TicketPermission]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["status", "priority", "assigned_to"]
     search_fields = ["title", "description"]
@@ -66,7 +67,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     - Agents: see all comments
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CommentPermission]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["ticket"]
     ordering = ["created_at"]
