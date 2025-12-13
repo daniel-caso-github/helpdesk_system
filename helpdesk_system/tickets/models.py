@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from model_utils import FieldTracker
 
 
 class Ticket(models.Model):
@@ -48,6 +49,8 @@ class Ticket(models.Model):
     )
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+
+    tracker = FieldTracker(fields=["status"])
 
     class Meta:
         verbose_name = _("Ticket")

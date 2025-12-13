@@ -4,3 +4,9 @@ from django.apps import AppConfig
 class TicketsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'helpdesk_system.tickets'
+
+    def ready(self):
+        try:
+            import helpdesk_system.tickets.signals  # noqa: F401
+        except ImportError:
+            pass

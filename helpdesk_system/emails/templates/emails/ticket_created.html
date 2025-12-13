@@ -1,0 +1,28 @@
+{% extends "emails/base.html" %}
+
+{% block title %}New Ticket Created{% endblock %}
+
+{% block content %}
+<h2>New Ticket Created</h2>
+
+<p>Hello {{ recipient_name }},</p>
+
+<p>A new support ticket has been created:</p>
+
+<div class="ticket-info">
+    <p><strong>Ticket #{{ ticket.id }}</strong></p>
+    <p><strong>Title:</strong> {{ ticket.title }}</p>
+    <p><strong>Priority:</strong> {{ ticket.get_priority_display }}</p>
+    <p><strong>Created by:</strong> {{ ticket.created_by.username }}</p>
+    <p><strong>Description:</strong></p>
+    <p>{{ ticket.description }}</p>
+</div>
+
+<p>
+    <span class="status-badge status-{{ ticket.status }}">
+        {{ ticket.get_status_display }}
+    </span>
+</p>
+
+<p>Thank you for using our Helpdesk System.</p>
+{% endblock %}
