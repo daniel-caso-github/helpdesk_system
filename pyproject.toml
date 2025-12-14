@@ -185,6 +185,7 @@ dependencies = [
     "djangorestframework==3.16.1",
     "djangorestframework-simplejwt>=5.5.1",
     "drf-spectacular==0.29.0",
+    "faker>=38.2.0",
     "flower==2.0.1",
     "gunicorn==23.0.0",
     "hiredis==3.3.0",
