@@ -7,6 +7,7 @@ from helpdesk_system.emails.tasks import send_ticket_created_email
 
 from .models import Comment
 from .models import Ticket
+from ..notifications.services import NotificationService
 
 
 @receiver(post_save, sender=Ticket)
@@ -15,11 +16,13 @@ def ticket_post_save(sender, instance, created, **kwargs):
     if created:
         # New ticket created - notify agents
         send_ticket_created_email.delay(instance.id)
+        NotificationService.notify_ticket_created(instance)
     else:
         # Check if status changed
         if instance.tracker.has_changed("status"):
             old_status = instance.tracker.previous("status")
             send_status_changed_email.delay(instance.id, old_status)
+            NotificationService.notify_status_changed(instance, old_status)
 
 
 @receiver(post_save, sender=Comment)
@@ -27,3 +30,4 @@ def comment_post_save(sender, instance, created, **kwargs):
     """Handle comment post-save signals."""
     if created:
         send_comment_added_email.delay(instance.id)
+        NotificationService.notify_comment_added(instance)
