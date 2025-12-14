@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from helpdesk_system import tickets
-
 
 class EmailLog(models.Model):
     """Log of emails sent by the system."""

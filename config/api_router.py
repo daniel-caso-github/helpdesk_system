@@ -2,7 +2,8 @@ from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from rest_framework.routers import SimpleRouter
 
-from helpdesk_system.tickets.views import TicketViewSet, CommentViewSet
+from helpdesk_system.tickets.views import CommentViewSet
+from helpdesk_system.tickets.views import TicketViewSet
 from helpdesk_system.users.api.views import UserViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()

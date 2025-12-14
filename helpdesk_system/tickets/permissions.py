@@ -32,10 +32,7 @@ class TicketPermission(permissions.BasePermission):
             return True
 
         # Customers can list, create, retrieve
-        if view.action in ["list", "create", "retrieve"]:
-            return True
-
-        return False
+        return view.action in ["list", "create", "retrieve"]
 
     def has_object_permission(self, request, view, obj):
         # Agents have full access
@@ -63,10 +60,7 @@ class CommentPermission(permissions.BasePermission):
             return True
 
         # Customers can list, create, retrieve
-        if view.action in ["list", "create", "retrieve"]:
-            return True
-
-        return False
+        return view.action in ["list", "create", "retrieve"]
 
     def has_object_permission(self, request, view, obj):
         # Agents have full access

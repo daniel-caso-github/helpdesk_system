@@ -3,11 +3,11 @@ from django.db.models import Max
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from .models import Comment
 from .models import Ticket
-from .permissions import TicketPermission, CommentPermission
+from .permissions import CommentPermission
+from .permissions import TicketPermission
 from .serializers import CommentCreateSerializer
 from .serializers import CommentSerializer
 from .serializers import TicketCreateSerializer
@@ -25,7 +25,11 @@ class TicketViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = [TicketPermission]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_fields = ["status", "priority", "assigned_to"]
     search_fields = ["title", "description"]
     ordering_fields = ["created_at", "updated_at", "priority"]

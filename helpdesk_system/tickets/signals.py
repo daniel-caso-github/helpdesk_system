@@ -4,10 +4,10 @@ from django.dispatch import receiver
 from helpdesk_system.emails.tasks import send_comment_added_email
 from helpdesk_system.emails.tasks import send_status_changed_email
 from helpdesk_system.emails.tasks import send_ticket_created_email
+from helpdesk_system.notifications.services import NotificationService
 
 from .models import Comment
 from .models import Ticket
-from ..notifications.services import NotificationService
 
 
 @receiver(post_save, sender=Ticket)
@@ -17,12 +17,10 @@ def ticket_post_save(sender, instance, created, **kwargs):
         # New ticket created - notify agents
         send_ticket_created_email.delay(instance.id)
         NotificationService.notify_ticket_created(instance)
-    else:
-        # Check if status changed
-        if instance.tracker.has_changed("status"):
-            old_status = instance.tracker.previous("status")
-            send_status_changed_email.delay(instance.id, old_status)
-            NotificationService.notify_status_changed(instance, old_status)
+    elif instance.tracker.has_changed("status"):
+        old_status = instance.tracker.previous("status")
+        send_status_changed_email.delay(instance.id, old_status)
+        NotificationService.notify_status_changed(instance, old_status)
 
 
 @receiver(post_save, sender=Comment)

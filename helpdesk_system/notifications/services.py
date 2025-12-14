@@ -36,6 +36,7 @@ class NotificationService:
         """Notify ticket creator when status changes."""
         channel_layer = cls._get_channel_layer()
 
+        status_display = ticket.get_status_display()
         data = {
             "type": "status_changed",
             "ticket": {
@@ -44,7 +45,7 @@ class NotificationService:
                 "old_status": old_status,
                 "new_status": ticket.status,
             },
-            "message": f"Ticket #{ticket.id} status changed to {ticket.get_status_display()}",
+            "message": f"Ticket #{ticket.id} status changed to {status_display}",
         }
 
         # Notify ticket creator
@@ -70,7 +71,7 @@ class NotificationService:
                 "author": comment.author.username,
                 "content": comment.content[:100],  # Truncate for notification
             },
-            "message": f"New comment on ticket #{ticket.id} by {comment.author.username}",
+            "message": f"New comment on ticket #{ticket.id}",
         }
 
         # Notify ticket creator if comment is from someone else

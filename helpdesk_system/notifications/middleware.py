@@ -3,19 +3,21 @@ from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
 from django.contrib.auth.models import AnonymousUser
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 
 
 @database_sync_to_async
 def get_user(token_key):
     """Get user from JWT token."""
-    from helpdesk_system.users.models import User
+    from helpdesk_system.users.models import User  # noqa: PLC0415
 
     try:
         token = AccessToken(token_key)
         user_id = token.payload.get("user_id")
         return User.objects.get(id=user_id)
-    except Exception:
+    except (InvalidToken, TokenError, User.DoesNotExist):
         return AnonymousUser()
 
 

@@ -1,4 +1,3 @@
-
 from celery import shared_task
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -8,7 +7,7 @@ from django.utils import timezone
 @shared_task(bind=True, max_retries=3)
 def send_ticket_email(self, email_log_id: int):
     """Send email and update EmailLog status."""
-    from .models import EmailLog
+    from .models import EmailLog  # noqa: PLC0415
 
     try:
         email_log = EmailLog.objects.get(id=email_log_id)
@@ -31,16 +30,16 @@ def send_ticket_email(self, email_log_id: int):
         email_log.status = EmailLog.Status.FAILED
         email_log.error_message = str(exc)
         email_log.save(update_fields=["status", "error_message"])
-        raise self.retry(exc=exc, countdown=60)
+        raise self.retry(exc=exc, countdown=60) from exc
 
 
 @shared_task
 def send_ticket_created_email(ticket_id: int):
     """Send email notification when a ticket is created."""
-    from helpdesk_system.tickets.models import Ticket
-    from helpdesk_system.users.models import User
+    from helpdesk_system.tickets.models import Ticket  # noqa: PLC0415
+    from helpdesk_system.users.models import User  # noqa: PLC0415
 
-    from .models import EmailLog
+    from .models import EmailLog  # noqa: PLC0415
 
     try:
         ticket = Ticket.objects.select_related("created_by").get(id=ticket_id)
@@ -72,9 +71,9 @@ def send_ticket_created_email(ticket_id: int):
 @shared_task
 def send_status_changed_email(ticket_id: int, old_status: str):
     """Send email notification when ticket status changes."""
-    from helpdesk_system.tickets.models import Ticket
+    from helpdesk_system.tickets.models import Ticket  # noqa: PLC0415
 
-    from .models import EmailLog
+    from .models import EmailLog  # noqa: PLC0415
 
     try:
         ticket = Ticket.objects.select_related("created_by").get(id=ticket_id)
@@ -106,9 +105,9 @@ def send_status_changed_email(ticket_id: int, old_status: str):
 @shared_task
 def send_comment_added_email(comment_id: int):
     """Send email notification when a comment is added."""
-    from helpdesk_system.tickets.models import Comment
+    from helpdesk_system.tickets.models import Comment  # noqa: PLC0415
 
-    from .models import EmailLog
+    from .models import EmailLog  # noqa: PLC0415
 
     try:
         comment = Comment.objects.select_related(
