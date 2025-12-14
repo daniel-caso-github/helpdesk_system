@@ -1,0 +1,17 @@
+services:
+  docs:
+    image: helpdesk_system_local_docs
+    container_name: helpdesk_system_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - /app/.venv
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./helpdesk_system:/app/helpdesk_system:z
+    ports:
+      - '9000:9000'
+    command: /start-docs

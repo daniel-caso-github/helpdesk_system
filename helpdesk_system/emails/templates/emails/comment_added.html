@@ -1,0 +1,26 @@
+{% extends "emails/base.html" %}
+
+{% block title %}
+  New Comment on Ticket
+{% endblock title %}
+{% block content %}
+  <h2>New Comment Added</h2>
+  <p>Hello {{ recipient_name }},</p>
+  <p>A new comment has been added to your ticket:</p>
+  <div class="ticket-info">
+    <p>
+      <strong>Ticket #{{ ticket.id }}</strong>
+    </p>
+    <p>
+      <strong>Title:</strong> {{ ticket.title }}
+    </p>
+    <p>
+      <strong>Comment by:</strong> {{ comment.author.username }}
+    </p>
+    <p>
+      <strong>Comment:</strong>
+    </p>
+    <p>{{ comment.content }}</p>
+  </div>
+  <p>Thank you for using our Helpdesk System.</p>
+{% endblock content %}
