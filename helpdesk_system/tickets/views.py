@@ -2,6 +2,8 @@ from django.core.cache import cache
 from django.db.models import Count
 from django.db.models import Max
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -21,12 +23,52 @@ from .serializers import TicketListSerializer
 from .serializers import TicketUpdateSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List tickets",
+        description=(
+            "Returns paginated list of tickets. "
+            "Customers see only their own tickets, agents see all."
+        ),
+    ),
+    create=extend_schema(
+        summary="Create ticket",
+        description=(
+            "Create a new support ticket. "
+            "The authenticated user becomes the ticket creator."
+        ),
+    ),
+    retrieve=extend_schema(
+        summary="Get ticket details",
+        description="Returns ticket details including all comments.",
+    ),
+    update=extend_schema(
+        summary="Update ticket",
+        description=(
+            "Update ticket fields. Only agents can change status and assignment."
+        ),
+    ),
+    partial_update=extend_schema(
+        summary="Partial update ticket",
+        description="Partially update ticket fields.",
+    ),
+    destroy=extend_schema(
+        summary="Delete ticket",
+        description="Delete a ticket. Only agents can delete tickets.",
+    ),
+)
 class TicketViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for tickets with role-based filtering.
+    ViewSet for managing support tickets.
 
-    - Customers: only see their own tickets
-    - Agents: see all tickets
+    Provides CRUD operations with role-based access control:
+    - **Customers**: Can create tickets and view/comment on their own tickets
+    - **Agents**: Full access to all tickets, can change status and assign
+
+    Supports filtering, search, and ordering:
+    - Filter by: status, priority, assigned_to
+    - Search in: title, description
+    - Order by: created_at, updated_at, priority
     """
 
     permission_classes = [TicketPermission]
@@ -93,12 +135,30 @@ class TicketViewSet(viewsets.ModelViewSet):
         instance.delete()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List comments",
+        description="Returns comments. Filter by ticket using ?ticket={id}",
+    ),
+    create=extend_schema(
+        summary="Create comment",
+        description="Add a comment to a ticket.",
+    ),
+    retrieve=extend_schema(
+        summary="Get comment",
+        description="Returns a single comment.",
+    ),
+    destroy=extend_schema(
+        summary="Delete comment",
+        description="Delete a comment.",
+    ),
+)
 class CommentViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for comments.
+    ViewSet for managing ticket comments.
 
-    - Customers: only see comments on their tickets
-    - Agents: see all comments
+    - **Customers**: Can view and create comments on their own tickets
+    - **Agents**: Full access to all comments
     """
 
     permission_classes = [CommentPermission]
